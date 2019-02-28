@@ -1,0 +1,35 @@
+version: "2.1"
+
+services:
+  backend:
+    image: cell_radio_backend:latest
+    ports:
+      - "${BE_HTTP_PORT:-8080}:${BE_HTTP_PORT:-8080}"
+      - "${BE_WS_PORT:-8081}:${BE_WS_PORT:-8081}"
+    environment:
+      - SRV_HOST=${BE_SRV_HOST:-0.0.0.0}
+      - HTTP_PORT=${BE_HTTP_PORT:-8080}
+      - HTTP_PATH=${BE_HTTP_PATH:-ht}
+      - WS_PORT=${BE_WS_PORT:-8081}
+      - WS_PATH=${BE_WS_PATH:-ws}
+    volumes:
+
+    networks:
+      - cell-radio
+  webapp:
+    image: nginx:latest
+    ports:
+      - "4201:80"
+    environment:
+      - NGINX_HOST=${WEBAPP_HOST:-"localhost"}
+      - NGINX_PORT=80
+    volumes:
+      - cell-radio:/usr/share/nginx/html
+    networks:
+      - cell-radio
+
+networks:
+  cell-radio:
+
+volumes:
+  cell-radio:
